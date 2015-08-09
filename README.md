@@ -12,6 +12,8 @@ This can be used to either upgrade an existing installation or handle a new inst
 ### Advanced Installations
 Now the script will automatically upgrade advanced installations. You still need to move the core into place before running Setup on a new advanced installation.
 
+Make sure to select the Advanced version of MODX to download!
+
 #### Always make sure to backup your existing installation before doing anything else.
 
 In order to be able to directly download the MODX zip archive from the MODX repository, your server must have either allow_url_fopen or cURL enabled.
