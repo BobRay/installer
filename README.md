@@ -9,6 +9,9 @@ The script will download the selected version from the MODX respository, unzip i
 
 This can be used to either upgrade an existing installation or handle a new installation.
 
+### Advanced Installations
+Now the script will automatically upgrade advanced installations. You still need to move the core into place before running Setup on a new advanced installation.
+
 #### Always make sure to backup your existing installation before doing anything else.
 
 In order to be able to directly download the MODX zip archive from the MODX repository, your server must have either allow_url_fopen or cURL enabled.
@@ -18,6 +21,10 @@ In order to be able to unzip the downloaded MODX archive, your PHP must be at le
 You may need to change the permissions for newly created folders on line 145. For example, your server may require directory permissions of 0755.
 
 Changelog:
+
+Version 1.6.0-beta
+(09-08-2015)
+- Enable upgrade of Advanced installation
 
 Version 1.5.0-beta
 (26-06-2015)
