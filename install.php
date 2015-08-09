@@ -1,5 +1,5 @@
 <?php
-$version = '1.5.0-beta';
+$version = '1.6.0-beta';
 
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -17,8 +17,12 @@ if (ini_get('allow_url_fopen')) {
 } elseif (extension_loaded('curl')) {
     $method = 'curl';
 } else {
-    die('Neither allow_url_fopen or cURL is enabled');
+    die('Neither allow_url_fopen nor cURL is enabled, cannot download the MODX archive');
+}
 
+if(is_file('config.core.php')) {
+	$upgrade = true;
+	include 'config.core.php';
 }
 
 $InstallData = array(
@@ -93,26 +97,26 @@ class ModxInstaller {
                 $ch = curl_init(str_replace(" ", "%20", $url));
                 curl_setopt($ch, CURLOPT_TIMEOUT, 50);
                 curl_setopt($ch, CURLOPT_FILE, $newf);
-                if (filter_var(ini_get(‘open_basedir’), FILTER_VALIDATE_BOOLEAN) === false && filter_var(ini_get(‘safe_mode’), FILTER_VALIDATE_BOOLEAN) === false) {
+                if (filter_var(ini_get('open_basedir'), FILTER_VALIDATE_BOOLEAN) === false && filter_var(ini_get('safe_mode'), FILTER_VALIDATE_BOOLEAN) === false) {
                 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                 } else {
                 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
                 	$rch = curl_copy_handle($ch);
                 	$newurl = $url;
-									curl_setopt($rch, CURLOPT_URL, $newurl);
-        					$header = curl_exec($rch);
-        					if (curl_errno($rch)) {
-          					$code = 0;
-        					} else {
-          					$code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
-          					if ($code == 301 || $code == 302) {
-            					preg_match('/Location:(.*?)\n/i', $header, $matches);
-            					$newurl = trim(array_pop($matches));
+			curl_setopt($rch, CURLOPT_URL, $newurl);
+        		$header = curl_exec($rch);
+        		if (curl_errno($rch)) {
+          			$code = 0;
+        		} else {
+          			$code = curl_getinfo($rch, CURLINFO_HTTP_CODE);
+          			if ($code == 301 || $code == 302) {
+            				preg_match('/Location:(.*?)\n/i', $header, $matches);
+            				$newurl = trim(array_pop($matches));
                 		}
                 		curl_close($rch);
-      							curl_setopt($ch, CURLOPT_URL, $newurl);
-      						}
-      					}
+      				curl_setopt($ch, CURLOPT_URL, $newurl);
+      			}
+      		}
                 $data = curl_exec($ch);
                 curl_close($ch);
             } else {
@@ -203,6 +207,10 @@ if (!empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GE
 
     ModxInstaller::copyFolder(dirname(__FILE__) . '/temp/' . $dir, dirname(__FILE__) . '/');
     ModxInstaller::removeFolder(dirname(__FILE__) . '/temp');
+    if($upgrade) {
+    	ModxInstaller::copyFolder(dirname(__FILE__) . '/core/', MODX_CORE_PATH);
+    	ModxInstaller::removeFolder(dirname(__FILE__) . '/core');
+    }
     unlink(basename(__FILE__));
     header('Location: ' . $rowInstall['location']);
 
