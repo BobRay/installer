@@ -24,6 +24,10 @@ You may need to change the permissions for newly created folders on line 145. Fo
 
 Changelog:
 
+Version 1.6.1-beta
+(10-08-2015)
+- Fixed bug were upgrades removed core from traditional location
+
 Version 1.6.0-beta
 (09-08-2015)
 - Enable upgrade of Advanced installation
