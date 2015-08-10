@@ -21,8 +21,11 @@ if (ini_get('allow_url_fopen')) {
 }
 
 if(is_file('config.core.php')) {
-	$upgrade = true;
-	include 'config.core.php';
+    $upgrade = true;
+    include 'config.core.php';
+    if(MODX_CORE_PATH != dirname(__FILE__) . '/core/') {
+	$advancedUpgrade = true;
+    }
 }
 
 $InstallData = array(
@@ -207,7 +210,7 @@ if (!empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GE
 
     ModxInstaller::copyFolder(dirname(__FILE__) . '/temp/' . $dir, dirname(__FILE__) . '/');
     ModxInstaller::removeFolder(dirname(__FILE__) . '/temp');
-    if($upgrade) {
+    if($advancedUpgrade) {
     	ModxInstaller::copyFolder(dirname(__FILE__) . '/core/', MODX_CORE_PATH);
     	ModxInstaller::removeFolder(dirname(__FILE__) . '/core');
     }
