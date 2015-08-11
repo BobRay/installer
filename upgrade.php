@@ -143,10 +143,17 @@ class ModxInstaller {
             mkdir($folder, $perm);
         }
     }
+
+
 }
+
+/* Next two lines for running in debugger (comment out two lines below) */
+// if (true || !empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GET['modx']])) {
+//$rowInstall = $InstallData['revo2.3.5-pl'];
 
 if (!empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GET['modx']])) {
     $rowInstall = $InstallData[$_GET['modx']];
+
 
     if (file_exists('config.core.php')) {
         @include 'config.core.php';
@@ -192,16 +199,20 @@ if (!empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GE
     }
 
     $directories = array(
-        'core'                      => MODX_CORE_PATH,
-        'manager'                   => MODX_MANAGER_PATH,
-        'connectors'                => MODX_CONNECTORS_PATH,
-        'core/model/modx/processors' => MODX_PROCESSORS_PATH,
+        'setup'                     => 'setup',
+        'core'                      => rtrim(MODX_CORE_PATH,'/\\'),
+        'manager'                   => rtrim(MODX_MANAGER_PATH, '/\\'),
+        'connectors'                => rtrim(MODX_CONNECTORS_PATH, '/\\'),
     );
+    $modxProcessorsPath = rtrim(MODX_PROCESSORS_PATH, '/\\');
+    if (strpos(MODX_PROCESSORS_PATH, 'core/model/modx/processors') === false) {
+        $directories['core/model/modx//processors'] = $modxProcessorsPath;
+    }
 
     foreach ($directories as $source => $target) {
-        ModxInstaller::copyFolder(dirname(__FILE__) . '/temp/' . $source, $target);
-        ModxInstaller::removeFolder(dirname(__FILE__) . '/temp');
+        ModxInstaller::copyFolder(dirname(__FILE__) . '/temp/' . $dir . '/' .$source, $target);
     }
+    ModxInstaller::removeFolder(dirname(__FILE__) . '/temp');
     unlink(basename(__FILE__));
     header('Location: ' . $rowInstall['location']);
 
