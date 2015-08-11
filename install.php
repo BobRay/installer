@@ -17,7 +17,7 @@ if (ini_get('allow_url_fopen')) {
 } elseif (extension_loaded('curl')) {
     $method = 'curl';
 } else {
-    die('Neither allow_url_fopen or cURL is enabled');
+    die('Neither allow_url_fopen or cURL is enabled, cannot download the MODX archive');
 
 }
 
