@@ -213,6 +213,16 @@ if (!empty($_GET['modx']) && is_scalar($_GET['modx']) && isset($InstallData[$_GE
         ModxInstaller::copyFolder(dirname(__FILE__) . '/temp/' . $dir . '/' .$source, $target);
     }
     ModxInstaller::removeFolder(dirname(__FILE__) . '/temp');
+
+    /* Clear cache files */
+
+    $path = MODX_CORE_PATH . 'cache';
+    if (is_dir($path)) {
+        ModxInstaller::removeFolder($path);
+        /* recreate cache dir */
+        ModxInstaller::mmkDir($path);
+    }
+
     unlink(basename(__FILE__));
     header('Location: ' . $rowInstall['location']);
 
